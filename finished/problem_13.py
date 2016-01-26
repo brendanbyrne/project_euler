@@ -4,11 +4,18 @@ if __name__ == "__main__":
     with open("problem_13.txt", "r") as f:
         data = [number.strip() for number in f]
     
-    with open("problem_13.txt", "r") as f:
-        data1= [int(d.strip()[-1]) for d in f]
-    print(sum(data1))
-        
+    total = 0
+    for string in data:
+        total += int(string)
 
+    print(str(total)[:10])
+
+
+    import sys
+    sys.exit()
+
+    # old attempts at carry addition, might need to revisit
+    
     foo = 0
     for d in data1:
         foo += d
