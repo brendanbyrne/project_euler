@@ -2,6 +2,7 @@
 
 from math import inf
 from copy import deepcopy
+from functools import reduce
 
 from butils.generators import window
 
@@ -51,9 +52,10 @@ def BellmanFord (graph, start):
     
     distance[start] = 0
     
-    
-    
+    i = 0
     while True:
+        print(i)
+        i+=1
         prev_distance = deepcopy(distance)
         
         for vertex in graph.keys():
@@ -73,6 +75,37 @@ def BellmanFord (graph, start):
                 
     return distance, predecessor
 
+def Dijkstra (graph, start, target):
+    
+    distance    = {vertex: inf for vertex in graph.keys()}
+    predecessor = {vertex: None for vertex in graph.keys()}
+    Q           = set(graph.keys())
+    
+    distance[start] = 0
+
+    wMin = lambda u,v: u if distance[u] < distance[v] else v
+
+    u = distance["start"]
+
+    while len(Q) != 0:
+        print("="*80)
+        for v in Q:
+            if distance[v] != inf: print("{}: {}".format(v, distance[v] - distance[u]))
+        u = reduce(wMin, Q)
+        
+        if u == target: break
+        
+        Q.discard(u)
+
+        for v, weight in graph[u]:
+            alt = distance[u] + weight
+            if alt < distance[v]:
+                distance[v] = alt
+                predecessor[v] = u
+    
+    return distance, predecessor
+
+
 def buildPath (graph, distance, predecessor):
     next_node = predecessor["finish"]
     
@@ -86,11 +119,31 @@ def buildPath (graph, distance, predecessor):
     path.reverse()
 
     numbers = []
-    for prev, curr in window(path, 2):
-        for node, weight in graph[prev]:
-            if node == curr:
+    for u, v in window(path, 2):
+        for node, weight in graph[u]:
+            if node == v:
                 numbers.append(-weight)
 
+    return numbers, -distance["finish"]
+
+def buildDPath (graph, distance, predecessor):
+
+    u = "finish"
+    path = [u]
+    
+    while predecessor[u] != "start":
+        u = predecessor[u]
+        path.append(u)
+    path.append("start")
+    
+    path.reverse()
+    
+    numbers = []
+    for u, v in window(path, 2):
+        for node, weight in graph[u]:
+            if node == v:
+                numbers.append(-weight)
+    
     return numbers, -distance["finish"]
 
 if __name__ == "__main__":
@@ -112,5 +165,12 @@ if __name__ == "__main__":
     distance, predecessor = BellmanFord(triangle, "start")
 
     path, total = buildPath(triangle, distance, predecessor)
+
+    print(" + ".join([str(n) for n in path]), " = ", total)
+
+
+    distance, predecessor = Dijkstra(triangle, "start", "finish")
+
+    path, total = buildDPath(triangle, distance, predecessor)
 
     print(" + ".join([str(n) for n in path]), " = ", total)
