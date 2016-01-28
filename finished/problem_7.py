@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from math import floor, sqrt
+import sys
 
 def squareMultipleOffset (number, max_value):
     square = number**2
@@ -8,8 +9,27 @@ def squareMultipleOffset (number, max_value):
     while offset <= max_value:
         yield offset        
         offset += number
-        
 
+def firstNPrimes (size_primes):
+    max_size = size_primes**2
+    first_prime = 2
+    
+    sieve = [True for _ in range(first_prime, max_size + 1)]
+    primes = []
+    
+    
+    potential_prime = first_prime
+    while len(primes) < size_primes:
+        if sieve[potential_prime - first_prime]:
+            primes.append(potential_prime)
+            
+            for multiple in squareMultipleOffset(potential_prime, max_size):
+                sieve[multiple - first_prime] = False
+                                
+        potential_prime += 1
+    
+    return primes
+        
 def basicSieve (min_value, max_value, *, initial_primes = []):
     
     sieve = [True for _ in range(min_value, max_value+1)]
@@ -48,5 +68,5 @@ if __name__ == "__main__":
         
     print("10,001st prime: {}".format(primes[10000]))
     
-    
-    
+    print("10,001st prime: {}".format(firstNPrimes(10001)[-1]))
+                                    
