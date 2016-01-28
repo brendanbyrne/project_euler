@@ -84,14 +84,25 @@ def Dijkstra (graph, start, target):
     distance[start] = 0
 
     wMin = lambda u,v: u if distance[u] < distance[v] else v
-
-    u = distance["start"]
+    
+    def wMax (u,v):
+        if distance[u] == inf and distance[v] == inf:
+            return u
+        elif distance[u] != inf and distance[v] != inf:
+            return u if distance[u] > distance[v] else v
+        else:
+            return u if distance[u] != inf else v
+            
+    u = distance[start]
 
     while len(Q) != 0:
         print("="*80)
         for v in Q:
-            if distance[v] != inf: print("{}: {}".format(v, distance[v] - distance[u]))
-        u = reduce(wMin, Q)
+            if distance[v] != inf: print("V: {}, Distance: {}".format(v, distance[v] - distance[u]))
+        print("Q: {}".format(Q))
+        #u = reduce(wMin, Q)
+        u = reduce(wMax, Q)
+        print("U: {}, Distance: {}".format(u, distance[u]))
         
         if u == target: break
         
