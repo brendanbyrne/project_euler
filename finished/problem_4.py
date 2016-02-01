@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-if __name__ == "__main__":
+def isPalindrome (num): 
+    return str(num) == str(num)[::-1]
 
-    isPalindrome = lambda num: str(num) == str(num)[::-1]
+if __name__ == "__main__":
     
     lb = 100
     ub = 999
